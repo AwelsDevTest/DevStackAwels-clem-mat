@@ -32,7 +32,7 @@ jobs:
             done
             
       - name: Copy 'custom-app' to 'app'
-        run: cp -r custom-app/. app/
+        run: cp -r openwebui-config/custom-app/. app/
 
       - name: Checkout OpenWebUI
         uses: actions/checkout@v4
