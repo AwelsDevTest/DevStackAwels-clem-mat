@@ -33,7 +33,7 @@ RUN npm ci
 
 COPY . .
 ENV APP_BUILD_HASH=${BUILD_HASH}
-RUN npm run build
+RUN npm run build --verbose
 
 ######## WebUI backend ########
 FROM python:3.11-slim-bookworm AS base
