@@ -5,8 +5,6 @@ on:
     branches:
       - 'main'
       - 'develop'
-    paths:
-      - 'openwebui-config/custom-app/**'
   schedule:
     - cron: '0 0 * * *'
 
@@ -23,9 +21,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Delete contents of 'app' directory
+        run: |
+            rm -rf app/*
+            find app -type f -print0 | while IFS= read -r -d $'\0' file; do
+              rm -f "$file"
+            done
+            find app -type d -empty -print0 | while IFS= read -r -d $'\0' dir; do
+              rmdir "$dir"
+            done
+            
       - name: Copy 'custom-app' to 'app'
-        run: cp -r openwebui-config/custom-app/. app/
-
+        run: cp -r custom-app/. app/
 
       - name: Checkout OpenWebUI
         uses: actions/checkout@v4
@@ -115,5 +122,7 @@ jobs:
           docker run -d \
             --name awels-ui \
             -p 8080:8080 \
+            -e ENABLE_API=true \
+            -e OPENAI_API_KEY=dev \
             -e AWELS_HOST=192.168.1.10 \
             ${{ env.DOCKER_IMAGE_NAME }}:latest
