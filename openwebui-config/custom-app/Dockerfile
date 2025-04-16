@@ -109,7 +109,7 @@ RUN chown -R $UID:$GID /app $HOME
 
 RUN apt-get update || (sleep 10 && apt-get update) || (sleep 30 && apt-get update)
 
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     build-essential \
     pandoc \
@@ -120,7 +120,8 @@ RUN apt-get install -y --no-install-recommends \
     python3-dev \
     ffmpeg \
     libsm6 \
-    libxext6
+    libxext6 && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 RUN if [ "$USE_OLLAMA" = "true" ]; then \
         curl -fsSL https://ollama.com/install.sh -o ollama_install.sh && \
